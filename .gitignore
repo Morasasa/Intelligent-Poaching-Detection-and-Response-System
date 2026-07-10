@@ -1,0 +1,58 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Environment
+.env
+backend/.env
+frontend/.env
+
+# IDE
+.vscode/
+.idea/
+.agents/
+.codex/
+*.swp
+*.swo
+.DS_Store
+
+# Model weights (large files)
+*.pt
+*.pth
+*.onnx
+
+# Backend static uploads & detection frames (user-generated)
+backend/static/videos/
+backend/static/images/
+backend/static/uploads/
+backend/backend/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Logs
+*.log
+backend.log
+project_logs.txt
+
+# Test files
+test_*.py
+test_*.jpg
+test_*.png
+
+# Temp scripts
+backend/tmp_*.py
+tmp_*.py
+
+# Misc
+github_commands.txt
+normalize_db.py
+DESIGN.md
+SITE.md
