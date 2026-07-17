@@ -373,6 +373,12 @@ When a **poacher** or **weapon** is detected:
 
 ---
 
+## Maintainer
+
+Maintained by [Morasasa](https://github.com/Morasasa).
+
+---
+
 ## 📄 License
 
 This project is developed as part of an academic/research initiative for wildlife conservation using AI technology.
