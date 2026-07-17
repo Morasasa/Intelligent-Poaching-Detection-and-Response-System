@@ -27,9 +27,9 @@ api.interceptors.response.use(
         if (error.response?.status === 401 || error.response?.status === 403) {
             // Clear any stored auth data
             localStorage.removeItem('token');
-            // Redirect to login page
-            if (window.location.pathname !== '/login') {
-                window.location.href = '/login';
+            // Hash routing works on GitHub Pages without server-side rewrites.
+            if (window.location.hash !== '#/login') {
+                window.location.hash = '/login';
             }
         }
         return Promise.reject(error);

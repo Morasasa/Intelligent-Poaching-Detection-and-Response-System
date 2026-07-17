@@ -9,12 +9,13 @@ from ultralytics import YOLO
 from db.mongodb import get_database
 from schemas.detection import DetectionCreate
 from schemas.alert import AlertCreate, AlertStatus
+from core.paths import IMAGES_DIR, MODELS_DIR
 from services.email_service import EmailService
 
 class DetectionService:
     def __init__(self):
         self.model = None
-        self.model_path = os.path.join(os.path.dirname(__file__), "..", "models", "best.pt")
+        self.model_path = str(MODELS_DIR / "best.pt")
         self.email_service = EmailService()
         self.critical_classes = ["poacher", "weapon"]
 
@@ -103,10 +104,10 @@ class DetectionService:
                     continue
 
                 frame_filename = f"{uuid.uuid4()}_frame.jpg"
-                frame_path = os.path.join("backend", "static", "images", frame_filename)
-                
+                frame_path = IMAGES_DIR / frame_filename
+
                 img = r.plot()
-                cv2.imwrite(frame_path, img)
+                cv2.imwrite(str(frame_path), img)
 
                 detection_data = DetectionCreate(
                     video_id=video_id,
@@ -148,7 +149,7 @@ class DetectionService:
                     self.email_service.send_alert_email_background(
                         alert_type=class_name,
                         confidence=confidence,
-                        image_path=frame_path
+                        image_path=str(frame_path)
                     )
                     
         await db.videos.update_one(

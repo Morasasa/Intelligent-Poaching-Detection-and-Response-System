@@ -19,6 +19,7 @@ An AI-powered wildlife surveillance platform that uses **YOLOv8 deep learning** 
 - [System Architecture](#-system-architecture)
 - [Project Structure](#-project-structure)
 - [Getting Started](#-getting-started)
+- [Deployment](#deployment)
 - [Environment Variables](#-environment-variables)
 - [Usage](#-usage)
 - [API Endpoints](#-api-endpoints)
@@ -233,6 +234,21 @@ This starts both servers:
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:8000
 - **API Docs (Swagger)**: http://localhost:8000/docs
+
+---
+
+## Deployment
+
+The frontend is configured for GitHub Pages and the API is configured for Render.
+
+1. Create a MongoDB Atlas cluster, database user, and IP access-list entry for the deployed API.
+2. In Render, create a Blueprint from this repository. Set `MONGO_URI` to the Atlas connection string and set `BACKEND_CORS_ORIGINS` to `["https://morasasa.github.io"]`.
+3. Copy the deployed Render URL and add a GitHub repository secret named `VITE_API_URL` with the value `<render-url>/api/v1`.
+4. In GitHub, open **Settings > Pages** and choose **GitHub Actions** as the publishing source. Push to `main` to deploy the frontend at `https://morasasa.github.io/Intelligent-Poaching-Detection-and-Response-System/`.
+
+Email settings are optional for deployment. Configure them as Render environment variables only after rotating any previously exposed credentials.
+
+Uploaded media is stored on the API instance's local disk and can be lost after a Render redeploy. Use persistent object storage before relying on uploads in production.
 
 ---
 

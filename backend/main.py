@@ -1,12 +1,14 @@
-import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from core.config import settings
+from core.paths import STATIC_DIR, ensure_static_directories
 from db.mongodb import connect_to_mongo, close_mongo_connection
 
 from services.detection_service import detection_service
+
+ensure_static_directories()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -14,10 +16,6 @@ async def lifespan(app: FastAPI):
     await connect_to_mongo()
     # LOAD YOLO ONCE AT STARTUP
     detection_service.load_model()
-    # Ensure static directories exist
-    os.makedirs("backend/static/videos", exist_ok=True)
-    os.makedirs("backend/static/images", exist_ok=True)
-    os.makedirs("backend/static/uploads", exist_ok=True)
     yield
     # Shutdown
     await close_mongo_connection()
@@ -43,9 +41,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve static files (detection images, etc.)
-if os.path.isdir("backend/static"):
-    app.mount("/static", StaticFiles(directory="backend/static"), name="static")
+# Serve static files (detection images, etc.).
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 @app.get("/")
 async def root():

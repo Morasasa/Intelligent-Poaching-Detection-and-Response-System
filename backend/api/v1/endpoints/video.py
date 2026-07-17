@@ -11,6 +11,7 @@ from schemas.user import User
 from schemas.video import Video, VideoStatus
 from db.mongodb import get_database
 from core.config import settings
+from core.paths import UPLOADS_DIR
 from services.detection_service import detection_service
 
 router = APIRouter()
@@ -40,10 +41,7 @@ async def upload_image(
         secure_name = "upload.jpg"
     
     # Ensure upload directory exists
-    upload_dir = os.path.join("backend", "static", "uploads")
-    os.makedirs(upload_dir, exist_ok=True)
-    
-    file_location = os.path.join(upload_dir, f"{video_id}_{secure_name}")
+    file_location = UPLOADS_DIR / f"{video_id}_{secure_name}"
     
     # Stream file to disk with size check
     max_bytes = MAX_UPLOAD_SIZE_MB * 1024 * 1024
@@ -77,7 +75,7 @@ async def upload_image(
         "user_id": current_user.id,
         "uploaded_at": datetime.now(),
         "status": VideoStatus.pending,
-        "file_path": file_location,
+        "file_path": str(file_location),
         "image_url": image_url
     }
     
@@ -89,7 +87,7 @@ async def upload_image(
             os.remove(file_location)
         raise HTTPException(status_code=500, detail="Failed to register upload in database.")
     
-    background_tasks.add_task(detection_service.process_video, video_id, file_location)
+    background_tasks.add_task(detection_service.process_video, video_id, str(file_location))
     
     return {"id": video_id, "status": "pending", "message": "Image uploaded and analysis started"}
 
@@ -156,11 +154,10 @@ async def clear_all_videos_and_detections(
         await db.alerts.delete_many({"detection_id": {"$in": detection_ids}})
     
     # Clean up physical files in uploads and images
-    import glob
     for v_id in video_ids:
-        for f in glob.glob(f"backend/static/uploads/{v_id}_*"):
+        for file_path in UPLOADS_DIR.glob(f"{v_id}_*"):
             try:
-                os.remove(f)
+                file_path.unlink()
             except OSError:
                 pass
                 
