@@ -18,14 +18,6 @@ services:
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: 10080
       - key: BACKEND_CORS_ORIGINS
-        sync: false
-      - key: EMAIL_ADDRESS
-        sync: false
-      - key: EMAIL_APP_PASSWORD
-        sync: false
-      - key: OFFICER_EMAIL
-        sync: false
-      - key: EMAILS_FROM_EMAIL
-        sync: false
+        value: '["https://morasasa.github.io"]'
       - key: EMAILS_FROM_NAME
         value: GuardianAI Security
