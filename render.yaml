@@ -22,3 +22,13 @@ services:
         value: '["https://morasasa.github.io"]'
       - key: EMAILS_FROM_NAME
         value: GuardianAI Security
+
+  - type: web
+    name: guardianai-web
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    rootDir: frontend
+    envVars:
+      - key: VITE_API_URL
+        value: https://guardianai-api-gab2.onrender.com/api/v1
